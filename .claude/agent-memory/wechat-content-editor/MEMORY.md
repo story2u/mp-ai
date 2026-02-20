@@ -28,4 +28,13 @@
 - Use blockquotes for key takeaways and safety warnings
 - "Pitfall guide" sections are highly valued by technical readers
 
+## Illustration References
+- Always preserve `![description](illustrations/...)` references in articles
+- Verify illustration files exist before finalizing (use Glob)
+- Never convert image references to text descriptions when instructed to keep them
+
+## Subheading Levels
+- When article uses `**bold text**` as sub-sections under `##`, consider upgrading to `###` for better hierarchy
+- "方法 1/2/3/4" pattern benefits from `###` level headings for structure
+
 ## Reference: [patterns.md](patterns.md) for detailed editorial patterns

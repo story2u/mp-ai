@@ -29,6 +29,14 @@
 - Always mention domestic alternatives: DeepSeek for LLM, Feishu/DingTalk for messaging
 - Highlight cost and latency benefits of domestic options
 - WSL2 note is important for Windows users in any dev tool article
+- **Dedicated chapter for CN users** works better than weaving CN tips into other chapters -- gives clear signal of respect for the audience and makes the content easier to find on mobile
+- When CN community projects exist (汉化版, CN-IM Docker), list them with project names and GitHub paths for credibility
+
+## Security Content in Tutorials
+- Weave security warnings throughout the article, not just in a final section
+- "Symptoms - Cause - Solution" three-part format is effective for troubleshooting entries
+- Lead with the most impactful security rule (e.g., "don't run as root") and rank by severity
+- Cite specific security research (Cisco, Vectra AI) to add weight to warnings
 
 ## See Also
 - [patterns.md](./patterns.md) - Detailed content patterns (to be created as more patterns emerge)

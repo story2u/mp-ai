@@ -21,5 +21,16 @@
 - Security considerations are increasingly important for AI agent tools
 
 ## Key Researchers & Projects (2025-2026)
-- Peter Steinberger: Creator of OpenClaw (formerly Clawdbot/Moltbot), joined OpenAI Feb 2026
-- OpenClaw: 200k+ GitHub stars, MIT license, transferred to open source foundation
+- Peter Steinberger: Creator of OpenClaw (formerly Clawdbot/Moltbot), joined OpenAI Feb 14 2026
+- OpenClaw: 190k+ GitHub stars, MIT license, transferred to open source foundation
+- OpenClaw naming history: Clawdbot (Nov 2025) -> Moltbot (Jan 27 2026) -> OpenClaw (Jan 30 2026)
+- Key security event: Cisco found malicious skills with data exfiltration; Vectra AI published detailed analysis
+- Chinese ecosystem: 汉化版 (MaoTouHU/OpenClawChinese), CN-IM Docker版 (justlovemaki/OpenClaw-Docker-CN-IM)
+
+## OpenClaw Authoritative Sources (Verified Feb 2026)
+- **Official docs**: docs.openclaw.ai (Mintlify hosted, highly fetchable)
+- **NxCode complete guide**: nxcode.io/resources/news/openclaw-complete-guide-2026 (excellent historical timeline)
+- **Vectra AI security**: vectra.ai/blog/clawdbot-to-moltbot-to-openclaw (detailed security analysis)
+- **菜鸟教程**: runoob.com/ai-agent/openclaw-clawdbot-tutorial.html (comprehensive Chinese guide, very fetchable)
+- **Codecademy tutorial**: codecademy.com/article/open-claw-tutorial (beginner-friendly English)
+- Docker docs: docs.openclaw.ai/install/docker (detailed Docker config including sandbox)

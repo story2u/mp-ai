@@ -11,7 +11,7 @@ This is a WeChat Official Account (微信公众号) AI content creation pipeline
 The pipeline follows a strict sequential flow:
 
 ```
-Research → Outline → Write → Review (content-editor + humanizer) → Save → Cover Image → Publish
+Research → Outline → Write → Illustrate → Review (content-editor + humanizer) → Save → Cover Image → Publish
 ```
 
 ### Custom Agents (`.claude/agents/`)
@@ -21,6 +21,7 @@ Research → Outline → Write → Review (content-editor + humanizer) → Save 
 | `ai-research-analyst` | `ai-research-analyst.md` | Searches Chinese & English web sources, produces a structured research report |
 | `wechat-outline-planner` | `wechat-outline-planner.md` | Transforms research into a mobile-friendly article outline |
 | `wechat-tech-writer` | `wechat-tech-writer.md` | Writes the full article from research + outline |
+| `baoyu-article-illustrator` | `baoyu-article-illustrator/SKILL.md` | Analyzes article structure, identifies positions needing visuals, generates illustrations with Type x Style consistency |
 | `wechat-content-editor` | `wechat-content-editor.md` | Review: accuracy, readability, formatting, SEO |
 | `humanizer` | `humanizer.md` | Review: removes AI writing patterns, makes text sound natural and human |
 | `baoyu-cover-image` | `baoyu-cover-image/SKILL.md` | Generates article cover images with 5-dimensional customization (type, palette, rendering, text, mood) |
@@ -47,6 +48,27 @@ Pass both the research report and outline to the writer agent.
 
 Prompt: "基于以下研究报告和大纲，撰写一篇完整的微信公众号文章。\n\n## 研究报告\n{研究报告}\n\n## 文章大纲\n{大纲内容}"
 
+### Step 3b: Illustrate (baoyu-article-illustrator)
+文章撰写完成后，使用 illustrator 为文章生成配图。先将文章保存为临时文件，再调用 Skill 工具。
+
+1. **保存文章到输出目录**：将 Step 3 的文章内容保存到 `./output/yyyy-mm-dd-标题/article-draft.md`
+2. **调用 illustrator**：
+
+Use the Skill tool to invoke:
+
+```
+/baoyu-article-illustrator ./output/yyyy-mm-dd-标题/article-draft.md --type infographic --density balanced
+```
+
+- illustrator 会分析文章结构，识别需要配图的位置
+- 交互确认插图类型（Type）、密度（Density）和风格（Style）
+- 生成 prompt 文件并通过 ChatGPT 生成插图
+- 最终将 `![description](path)` 插入到文章中
+
+3. **读取更新后的文章**：illustrator 完成后，读取 `article-draft.md`（已包含插图引用），作为后续 Review 步骤的输入
+
+**注意**：illustrator 生成的图片文件和 prompt 文件会保存在输出目录的子目录中。这些文件会在 Step 5 (Save) 时一并保留。
+
 ### Step 4: Review (wechat-content-editor + humanizer)
 This step uses two review agents **in parallel** for efficiency:
 
@@ -69,7 +91,12 @@ Create a date-prefixed directory under `./output/` and save all artifacts there:
 ./output/yyyy-mm-dd-文章标题/
 ├── research.md          # Step 1 research report
 ├── outline.md           # Step 2 article outline
-├── article.md           # Final reviewed article (main deliverable)
+├── article-draft.md     # Step 3 initial draft (before illustration)
+├── article.md           # Final reviewed article (main deliverable, with illustration references)
+├── illustrations/       # Step 3b generated illustrations
+│   ├── outline.md
+│   ├── prompts/
+│   └── NN-{type}-{slug}.png
 └── cover.png            # Step 6 cover image (generated after save)
 ```
 
@@ -203,7 +230,7 @@ npx -y bun .claude/agents/baoyu-post-to-wechat/scripts/wechat-api.ts \
 - Each step must wait for the previous step to complete (except Step 4a and 4b which run in parallel)
 - Pass the complete output of each step to the next
 - The final saved file must incorporate both reviewers' feedback
-- Save all intermediate artifacts (research, outline) to the output directory
+- Save all intermediate artifacts (research, outline, draft) to the output directory
 - After saving, report the directory path and a brief creation summary
 - Cover image is the final step of content creation; if it fails, the article is still complete and usable
 - Publishing (Step 7) is optional — only execute when the user explicitly requests publishing to WeChat
@@ -212,7 +239,7 @@ npx -y bun .claude/agents/baoyu-post-to-wechat/scripts/wechat-api.ts \
 ## WeChat Formatting Standards (enforced across agents)
 
 - Use `##` headings minimum (never `#`)
-- No tables, HTML tags, or image links
+- No tables, HTML tags, or image links (except `![](path)` references inserted by baoyu-article-illustrator, which are handled by the publish script)
 - Paragraphs ≤ 3-4 lines (mobile-friendly)
 - Add spaces between Chinese and English text / numbers
 - Use `>` blockquotes for key insights
